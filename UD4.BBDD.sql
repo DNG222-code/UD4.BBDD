@@ -15,69 +15,76 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`Tipus_vehicle`
+-- Table `mydb`.`Empleat`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Tipus_vehicle` (
-  `idTipus_vehicle` INT NOT NULL,
-  `Nom` VARCHAR(45) NOT NULL,
-  `Descripció` VARCHAR(45) NULL,
-  PRIMARY KEY (`idTipus_vehicle`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Vehicle`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Vehicle` (
-  `Matrícula` INT NOT NULL,
-  `Marca` VARCHAR(45) NOT NULL,
-  `Model` VARCHAR(45) NOT NULL,
-  `Tipus_vehicle_idTipus_vehicle` INT NOT NULL,
-  PRIMARY KEY (`Matrícula`),
-  INDEX `fk_Vehicle_Tipus_vehicle1_idx` (`Tipus_vehicle_idTipus_vehicle` ASC) VISIBLE,
-  CONSTRAINT `fk_Vehicle_Tipus_vehicle1`
-    FOREIGN KEY (`Tipus_vehicle_idTipus_vehicle`)
-    REFERENCES `mydb`.`Tipus_vehicle` (`idTipus_vehicle`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Client`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Client` (
-  `User` INT NOT NULL,
-  `Password` VARCHAR(45) NOT NULL,
-  `DNI` VARCHAR(45) NOT NULL,
+CREATE TABLE IF NOT EXISTS `mydb`.`Empleat` (
+  `DNI` INT NOT NULL,
   `Nom` VARCHAR(45) NOT NULL,
   `Cognom` VARCHAR(45) NOT NULL,
   `Adreça` VARCHAR(45) NOT NULL,
-  `Població` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(45) NOT NULL,
-  `Teléfon` VARCHAR(45) NOT NULL,
-  `Vehicle_Matrícula` INT NOT NULL,
-  PRIMARY KEY (`User`, `DNI`),
-  INDEX `fk_Client_Vehicle_idx` (`Vehicle_Matrícula` ASC) VISIBLE,
-  CONSTRAINT `fk_Client_Vehicle`
-    FOREIGN KEY (`Vehicle_Matrícula`)
-    REFERENCES `mydb`.`Vehicle` (`Matrícula`)
+  `Data_naixement` VARCHAR(45) NOT NULL,
+  `Telèfon` VARCHAR(45) NOT NULL,
+  `Edat` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`DNI`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Ticket`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Ticket` (
+  `Identificador` INT NOT NULL,
+  `Nºfactura` VARCHAR(45) NOT NULL,
+  `Data` VARCHAR(45) NOT NULL,
+  `Hora` VARCHAR(45) NOT NULL,
+  `Preu_IVA_inclòs` VARCHAR(45) NOT NULL,
+  `Empleat_DNI` INT NOT NULL,
+  PRIMARY KEY (`Identificador`),
+  INDEX `fk_Ticket_Empleat_idx` (`Empleat_DNI` ASC) VISIBLE,
+  CONSTRAINT `fk_Ticket_Empleat`
+    FOREIGN KEY (`Empleat_DNI`)
+    REFERENCES `mydb`.`Empleat` (`DNI`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Cita`
+-- Table `mydb`.`Producte`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Cita` (
-  `Data` VARCHAR(10) NOT NULL,
-  `Hora` VARCHAR(45) NOT NULL,
-  `Vehicle_Matrícula` INT NOT NULL,
-  INDEX `fk_Cita_Vehicle1_idx` (`Vehicle_Matrícula` ASC) VISIBLE,
-  CONSTRAINT `fk_Cita_Vehicle1`
-    FOREIGN KEY (`Vehicle_Matrícula`)
-    REFERENCES `mydb`.`Vehicle` (`Matrícula`)
+CREATE TABLE IF NOT EXISTS `mydb`.`Producte` (
+  `Codi_intern` INT NOT NULL,
+  `Codi_barres` VARCHAR(45) NOT NULL,
+  `Preu_Unitari` VARCHAR(45) NOT NULL,
+  `Descripció` VARCHAR(45) NOT NULL,
+  `IVA` VARCHAR(45) NOT NULL,
+  `Preu_Final` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Codi_intern`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Linea_de_ticket`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Linea_de_ticket` (
+  `Indentificador` INT NOT NULL,
+  `Ticket_Identificador` INT NOT NULL,
+  `Producte_Codi_intern` INT NOT NULL,
+  `Descripció_producte` VARCHAR(45) NOT NULL,
+  `Unitats_descompte` VARCHAR(45) NOT NULL,
+  `Preu_Unitari` VARCHAR(45) NOT NULL,
+  `Preu_Total` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Indentificador`),
+  INDEX `fk_Linea_de_ticket_Ticket1_idx` (`Ticket_Identificador` ASC) VISIBLE,
+  INDEX `fk_Linea_de_ticket_Producte1_idx` (`Producte_Codi_intern` ASC) VISIBLE,
+  CONSTRAINT `fk_Linea_de_ticket_Ticket1`
+    FOREIGN KEY (`Ticket_Identificador`)
+    REFERENCES `mydb`.`Ticket` (`Identificador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Linea_de_ticket_Producte1`
+    FOREIGN KEY (`Producte_Codi_intern`)
+    REFERENCES `mydb`.`Producte` (`Codi_intern`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

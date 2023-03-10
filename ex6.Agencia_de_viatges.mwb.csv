@@ -1,0 +1,5 @@
+id_reserva,Dia_reserva,Nombre_de_vol,Import_total,Vol_id_vol,Vol_Avió_Passatger_DNI
+1,02/02/2023,Ibéria,20€,1º,4659772Z
+2,13/03/2023,Vueling,25€,2º,4958610W
+3,31/6/2023,"Fly Emirates",100€,3º,4447893B
+4,11/12/2023,Qatar,200€,4º,4012374A
